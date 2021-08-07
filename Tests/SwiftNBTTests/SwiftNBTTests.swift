@@ -11,14 +11,24 @@ final class SwiftNBTTests: XCTestCase {
         let threadPool = NIOThreadPool(numberOfThreads: 2)
         threadPool.start()
         let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 2).next()
-        let reader = try! NBTFileReader(io: NonBlockingFileIO(threadPool: threadPool), bufferAllocator: ByteBufferAllocator())
+        let allocator = ByteBufferAllocator()
+        let reader = try! NBTFileReader(io: NonBlockingFileIO(threadPool: threadPool), bufferAllocator: allocator)
         
         let helloWorldNBT = try! reader.read(path: Bundle.module.path(forResource: "hello_world", ofType: "nbt") ?? "", eventLoop: eventLoop, gzip: false).wait()
-        XCTAssertEqual(helloWorldNBT.rootTagName, "hello world")
-        XCTAssertTrue(helloWorldNBT.rootTag is NBTCompound)
-        XCTAssertNotNil((helloWorldNBT.rootTag as! NBTCompound).value["name"])
-        XCTAssertTrue((helloWorldNBT.rootTag as! NBTCompound).value["name"] is NBTString)
-        XCTAssertEqual(((helloWorldNBT.rootTag as! NBTCompound).value["name"] as! NBTString).value, "Bananrama")
+        checkHellowWorld(nbt: helloWorldNBT)
+        var gzipedNBTBuffer = allocator.buffer(capacity: 0)
+        XCTAssertNoThrow(try helloWorldNBT.write(to: &gzipedNBTBuffer))
+        let compressHelloWorldNBT = try! NBT(readFrom: &gzipedNBTBuffer)
+        checkHellowWorld(nbt: compressHelloWorldNBT)
+    }
+    
+    
+    func checkHellowWorld(nbt: NBT) {
+        XCTAssertEqual(nbt.rootTagName, "hello world")
+        XCTAssertTrue(nbt.rootTag is NBTCompound)
+        XCTAssertNotNil((nbt.rootTag as! NBTCompound).value["name"])
+        XCTAssertTrue((nbt.rootTag as! NBTCompound).value["name"] is NBTString)
+        XCTAssertEqual(((nbt.rootTag as! NBTCompound).value["name"] as! NBTString).value, "Bananrama")
     }
 
     static var allTests = [

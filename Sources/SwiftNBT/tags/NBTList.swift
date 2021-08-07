@@ -32,7 +32,6 @@ public struct NBTList: NBTTag {
     }
     
     public func write(to buffer: inout ByteBuffer) {
-        buffer.writeInteger(tagID, endianness: .big)
         buffer.writeInteger(elementTypeID, endianness: .big)
         buffer.writeInteger(value.count, endianness: .big)
         value.map {

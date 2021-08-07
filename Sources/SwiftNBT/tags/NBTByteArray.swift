@@ -27,7 +27,6 @@ public struct NBTByteArray: NBTTag {
     }
     
     public func write(to buffer: inout ByteBuffer) {
-        buffer.writeInteger(tagID, endianness: .big)
         buffer.writeInteger(value.count, endianness: .big)
         value.map {
             buffer.writeInteger($0, endianness: .big)

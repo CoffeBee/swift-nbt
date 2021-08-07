@@ -13,4 +13,5 @@ public protocol NBTTag {
     init(readFrom buffer: inout ByteBuffer)
     
     func write(to buffer: inout ByteBuffer)
+
 }

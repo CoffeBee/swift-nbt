@@ -20,7 +20,6 @@ public struct NBTShort: NBTTag {
     }
     
     public func write(to buffer: inout ByteBuffer) {
-        buffer.writeInteger(tagID, endianness: .big)
         buffer.writeInteger(value, endianness: .big)
     }
 }

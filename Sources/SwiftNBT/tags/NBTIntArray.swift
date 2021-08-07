@@ -7,7 +7,7 @@
 
 import NIO
 
-public struct NBTIntArray: NBTTag {
+public struct NBTIntArray: NBTTag, Equatable {
     public let tagID: UInt8 = 11
     public var value: [Int32]
     
@@ -27,7 +27,6 @@ public struct NBTIntArray: NBTTag {
     }
     
     public func write(to buffer: inout ByteBuffer) {
-        buffer.writeInteger(tagID, endianness: .big)
         buffer.writeInteger(value.count, endianness: .big)
         value.map {
             buffer.writeInteger($0, endianness: .big)

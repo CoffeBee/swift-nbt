@@ -30,13 +30,13 @@ public struct NBTCompound: NBTTag {
     }
     
     public func write(to buffer: inout ByteBuffer) {
-        buffer.writeInteger(tagID, endianness: .big)
         for (name, tag) in self.value {
             buffer.writeInteger(tag.tagID, endianness: .big)
             buffer.writeInteger(UInt16(name.count), endianness: .big, as: UInt16.self)
             buffer.writeString(name)
             tag.write(to: &buffer)
         }
+        buffer.writeInteger(NBTEnd().tagID, endianness: .big)
         NBTEnd().write(to: &buffer)
     }
 }
