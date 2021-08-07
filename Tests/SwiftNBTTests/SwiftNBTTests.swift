@@ -12,9 +12,9 @@ final class SwiftNBTTests: XCTestCase {
         threadPool.start()
         let eventLoop = MultiThreadedEventLoopGroup(numberOfThreads: 2).next()
         let allocator = ByteBufferAllocator()
-        let reader = try! NBTFileReader(io: NonBlockingFileIO(threadPool: threadPool), bufferAllocator: allocator)
+        let nbtfile = try! NBTFile(io: NonBlockingFileIO(threadPool: threadPool), bufferAllocator: allocator)
         
-        let helloWorldNBT = try! reader.read(path: Bundle.module.path(forResource: "hello_world", ofType: "nbt") ?? "", eventLoop: eventLoop, gzip: false).wait()
+        let helloWorldNBT = try! nbtfile.read(path: Bundle.module.path(forResource: "hello_world", ofType: "nbt") ?? "", eventLoop: eventLoop, gzip: false).wait()
         checkHellowWorld(nbt: helloWorldNBT)
         var gzipedNBTBuffer = allocator.buffer(capacity: 0)
         XCTAssertNoThrow(try helloWorldNBT.write(to: &gzipedNBTBuffer))

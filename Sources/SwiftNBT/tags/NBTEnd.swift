@@ -17,6 +17,6 @@ public struct NBTEnd: NBTTag {
     public init() {}
     
     public func write(to buffer: inout ByteBuffer) {
-        buffer.writeInteger(tagID, endianness: .big, as: UInt8.self)
+        
     }
 }
